@@ -4,83 +4,92 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crypto Analysis Bot</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
     body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #1e3c72, #2a5298);
-        color: #fff;
+        font-family: 'Roboto', sans-serif;
+        background: url('https://images.unsplash.com/photo-1603780975945-0db21f0b59a5?auto=format&fit=crop&w=1950&q=80') no-repeat center center fixed;
+        background-size: cover;
         margin: 0;
         padding: 0;
-        font-size: 14px;
+        color: #fff;
+    }
+    .overlay {
+        position: fixed;
+        top:0; left:0; width:100%; height:100%;
+        background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(5px);
+        z-index: -1;
     }
     .container {
         max-width: 800px;
         margin: 50px auto;
-        padding: 25px;
-        background-color: rgba(0,0,0,0.5);
-        border-radius: 20px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+        padding: 30px;
+        background-color: rgba(0,0,0,0.45);
+        border-radius: 25px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.7);
         text-align: center;
     }
     .bot-image {
         width: 150px;
         height: 150px;
-        border-radius: 30px;
+        border-radius: 35px;
         object-fit: cover;
         margin-bottom: 15px;
-        border: 3px solid #ffd700;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        border: 3px solid #FFD700;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.5);
     }
     .bot-title {
-        font-size: 1.6rem;
-        color: #ffd700;
-        margin-bottom: 20px;
-        text-shadow: 1px 1px 5px #000;
+        font-size: 1.8rem;
+        color: #FFD700;
+        margin-bottom: 25px;
+        text-shadow: 2px 2px 6px #000;
+        font-weight: 700;
     }
     .language-select {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
         margin-bottom: 25px;
     }
     .lang-btn {
-        padding: 10px 25px;
-        margin: 0 10px;
+        padding: 12px 28px;
         font-size: 1rem;
         font-weight: 600;
-        border: none;
-        border-radius: 20px;
-        cursor: pointer;
-        background: rgba(255, 255, 255, 0.15);
+        border-radius: 25px;
+        border: 2px solid rgba(255,255,255,0.3);
+        background: rgba(255,255,255,0.1);
         color: #fff;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 8px;
         transition: all 0.3s ease;
     }
     .lang-btn:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255,255,255,0.25);
         transform: scale(1.05);
     }
     ul {
         list-style: none;
         padding: 0;
-        display: none; /* initially hidden */
         margin-bottom: 20px;
+        display: none;
     }
     li {
-        background-color: rgba(255, 255, 255, 0.1);
-        margin: 8px 0;
-        padding: 15px;
-        border-radius: 15px;
-        font-size: 0.95rem;
-        line-height: 1.5;
+        background-color: rgba(255, 255, 255, 0.12);
+        margin: 10px 0;
+        padding: 18px;
+        border-radius: 18px;
+        font-size: 1rem;
+        line-height: 1.6;
         display: flex;
         align-items: flex-start;
         opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.6s ease-out;
-    }
-    li.visible {
-        opacity: 1;
-        transform: translateY(0);
+        transform: translateY(25px);
     }
     .emoji {
-        font-size: 1.8rem;
+        font-size: 1.7rem;
         margin-right: 12px;
     }
     .feature-text {
@@ -88,41 +97,42 @@
         text-align: left;
     }
     .highlight {
-        color: #ffd700;
-        font-weight: bold;
+        color: #FFD700;
+        font-weight: 700;
     }
     .cta-button {
-        display: none; /* initially hidden */
-        margin-top: 15px;
+        display: none;
+        margin-top: 20px;
         padding: 18px 50px;
         font-size: 1.6rem;
         font-weight: 700;
         color: #fff;
         background: rgba(255, 255, 255, 0.1);
         border-radius: 25px;
-        backdrop-filter: blur(10px);
+        backdrop-filter: blur(12px);
         border: 2px solid rgba(255,255,255,0.3);
         cursor: pointer;
         text-decoration: none;
         transition: all 0.3s ease;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.5);
     }
     .cta-button:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255,255,255,0.2);
         transform: translateY(-3px) scale(1.05);
         box-shadow: 0 12px 25px rgba(0,0,0,0.6);
     }
 </style>
 </head>
 <body>
+<div class="overlay"></div>
 
 <div class="container">
     <img class="bot-image" src="https://i.postimg.cc/jjpxh9yP/IMG-4577.jpg" alt="Bot Image">
     <div class="bot-title">Crypto Analysis Bot | بوت تحليل العملات</div>
 
     <div class="language-select">
-        <button class="lang-btn" onclick="chooseLanguage('en')">English</button>
-        <button class="lang-btn" onclick="chooseLanguage('ar')">العربية</button>
+        <button class="lang-btn" onclick="chooseLanguage('en')">🇺🇸 English</button>
+        <button class="lang-btn" onclick="chooseLanguage('ar')">🇸🇦 العربية</button>
     </div>
 
     <ul id="features-list"></ul>
@@ -157,26 +167,24 @@
         const featuresList = document.getElementById('features-list');
         featuresList.style.display = 'block';
         featuresList.innerHTML = '';
-        features[lang].forEach(f => {
+
+        features[lang].forEach((f, index) => {
             const li = document.createElement('li');
             li.innerHTML = `<span class="emoji">${f.emoji}</span><div class="feature-text">${f.text}</div>`;
             featuresList.appendChild(li);
-        });
-        // show start button
-        document.getElementById('start-btn').style.display = 'inline-block';
 
-        // fade-in effect
-        const items = document.querySelectorAll('li');
-        const observer = new IntersectionObserver(entries => {
-            entries.forEach(entry => {
-                if(entry.isIntersecting){
-                    entry.target.classList.add('visible');
-                }
-            });
-        }, { threshold: 0.2 });
-        items.forEach(item => observer.observe(item));
+            // delayed fade-in for each feature
+            setTimeout(() => {
+                li.style.transition = "all 0.7s ease-out";
+                li.classList.add('visible');
+            }, index * 350); // 350ms delay per item
+        });
+
+        // show start button after all features appear
+        setTimeout(() => {
+            document.getElementById('start-btn').style.display = 'inline-block';
+        }, features[lang].length * 350 + 300);
     }
 </script>
-
 </body>
 </html>
