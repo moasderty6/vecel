@@ -22,7 +22,7 @@
         width:200%; height:200%;
         background: url('https://i.postimg.cc/Z5k7q9Ww/crypto-chart-bg.jpg') repeat;
         background-size: cover;
-        filter: blur(8px) brightness(0.4);
+        filter: blur(7px) brightness(0.35);
         z-index:-1;
         animation: moveBg 180s linear infinite;
     }
@@ -37,7 +37,7 @@
         max-width: 900px;
         margin: 50px auto;
         padding: 40px;
-        background-color: rgba(0,0,0,0.6);
+        background-color: rgba(0,0,0,0.65);
         border-radius: 25px;
         box-shadow: 0 8px 25px rgba(0,0,0,0.7);
         text-align: center;
@@ -54,18 +54,11 @@
     }
 
     .bot-title {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
         color: #ffd700;
         font-weight: 700;
-        text-shadow: 2px 2px 10px #000;
-    }
-
-    .bot-title-ar {
-        font-size: 2.2rem;
-        color: #ffd700;
-        font-weight: 700;
+        text-shadow: 2px 2px 12px #000;
         margin-bottom: 30px;
-        text-shadow: 2px 2px 10px #000;
     }
 
     .language-select {
@@ -166,8 +159,7 @@
 
 <div class="container">
     <img class="bot-image" src="https://i.postimg.cc/jjpxh9yP/IMG-4577.jpg" alt="Bot Image">
-    <div class="bot-title">Crypto Analysis Bot</div>
-    <div class="bot-title-ar">بوت تحليل العملات</div>
+    <div class="bot-title">🤖 Crypto Analysis Bot</div>
 
     <div class="language-select">
         <div class="lang-card" onclick="chooseLanguage('en')">🇬🇧 English</div>
@@ -201,13 +193,11 @@ const features = {
 };
 
 function chooseLanguage(lang){
-    // اختفاء كروت اللغة
     const langDiv = document.querySelector('.language-select');
     langDiv.style.transition = "opacity 0.5s";
     langDiv.style.opacity=0;
     setTimeout(()=>{langDiv.style.display='none';},500);
 
-    // إظهار المميزات تدريجياً
     const featuresList = document.getElementById('features-list');
     featuresList.style.display='block';
     featuresList.innerHTML='';
@@ -218,13 +208,12 @@ function chooseLanguage(lang){
             li.innerHTML=`<span class="emoji">${f.emoji}</span><div class="feature-text">${f.text}</div>`;
             featuresList.appendChild(li);
             li.classList.add('visible');
-        }, i*700); // ظهور تدريجي أبطأ
+        }, i*650);
     });
 
-    // زر البداية بعد انتهاء المميزات
     setTimeout(()=>{
         document.getElementById('start-btn').style.display='inline-block';
-    }, features[lang].length*700 + 400);
+    }, features[lang].length*650 + 400);
 }
 </script>
 
