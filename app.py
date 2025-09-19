@@ -1,88 +1,134 @@
+# app.py
 import os
 import json
-from aiohttp import web
+import asyncio
 import httpx
-from aiohttp_jinja2 import setup as jinja_setup, render_template
+from aiohttp import web
+import aiohttp_jinja2
 import jinja2
 from dotenv import load_dotenv
 
 load_dotenv()
-BOT_TOKEN = os.getenv("BOT_TOKEN")
-BOT_API_URL = f"https://api.telegram.org/bot{BOT_TOKEN}/sendMessage"
-MINI_PORT = int(os.getenv("MINI_PORT", 9000))
-USERS_FILE = "mini_users.json"
 
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+CMC_KEY = os.getenv("CMC_API_KEY")
+PORT = int(os.getenv("MINI_PORT", 9000))
+
+USERS_FILE = "users.json"
+user_lang = {}
+
+# =========================
+# Load/Save Users
+# =========================
 def load_users():
+    global user_lang
     try:
         with open(USERS_FILE, "r") as f:
-            return json.load(f)
+            user_lang = json.load(f)
     except:
-        return {}
+        user_lang = {}
 
-def save_users(users):
+def save_users():
     with open(USERS_FILE, "w") as f:
-        json.dump(users, f)
+        json.dump(user_lang, f)
 
-user_lang = load_users()
+load_users()
 
-async def send_message(chat_id, text, reply_markup=None):
-    payload = {"chat_id": chat_id, "text": text, "parse_mode": "HTML"}
-    if reply_markup:
-        payload["reply_markup"] = json.dumps(reply_markup)
-    async with httpx.AsyncClient() as client:
-        await client.post(BOT_API_URL, json=payload)
+# =========================
+# Price fetching
+# =========================
+async def get_price_cmc(symbol):
+    url = f"https://pro-api.coinmarketcap.com/v1/cryptocurrency/quotes/latest?symbol={symbol.upper()}"
+    headers = {"X-CMC_PRO_API_KEY": CMC_KEY}
+    try:
+        async with httpx.AsyncClient() as client:
+            res = await client.get(url, headers=headers)
+            if res.status_code != 200:
+                return None
+            data = res.json()
+            return data["data"][symbol.upper()]["quote"]["USD"]["price"]
+    except:
+        return None
 
+# =========================
+# Groq AI Analysis
+# =========================
+async def ask_groq(prompt, lang="ar"):
+    headers = {
+        "Authorization": f"Bearer {GROQ_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    data = {
+        "model": "meta-llama/llama-4-maverick-17b-128e-instruct",
+        "messages": [{"role": "user", "content": prompt}]
+    }
+    try:
+        async with httpx.AsyncClient(timeout=60) as client:
+            res = await client.post("https://api.groq.com/openai/v1/chat/completions", headers=headers, json=data)
+            result = res.json()
+            content = result["choices"][0]["message"]["content"]
+            return content.strip()
+    except Exception as e:
+        print("❌ Error:", e)
+        return "❌ حدث خطأ أثناء التحليل." if lang=="ar" else "❌ Analysis failed."
+
+# =========================
+# WebApp HTML
+# =========================
 async def index(request):
-    return render_template("index.html", request=request, context={})
+    context = {}
+    return aiohttp_jinja2.render_template("index.html", request=request, context=context)
 
-async def interact(request):
-    user_id = request.match_info.get("user_id")
-    lang = user_lang.get(user_id, "ar")
-    kb = {
-        "inline_keyboard": [
-            [{"text": "🇸🇦 العربية", "callback_data": "lang_ar"}],
-            [{"text": "🇺🇸 English", "callback_data": "lang_en"}]
-        ]
-    }
-    await send_message(user_id, "👋 اختر لغتك:\nChoose your language:", reply_markup=kb)
-    return web.Response(text=f"تم بدء التفاعل مع {user_id}")
-
-async def send_symbol(request):
+# =========================
+# Handle Analysis Request (via fetch)
+# =========================
+async def analyze(request):
     data = await request.json()
-    user_id = str(data["user_id"])
-    symbol = data["symbol"].upper()
-    price = data.get("price", 0)
-    user_lang[user_id+"_symbol"] = symbol
-    user_lang[user_id+"_price"] = price
-    save_users(user_lang)
+    symbol = data.get("symbol")
+    timeframe = data.get("timeframe", "1W")
+    lang = data.get("lang", "ar")
+    price = await get_price_cmc(symbol)
+    if not price:
+        return web.json_response({"status":"error","msg":"❌ لم أتمكن من جلب السعر الحالي للعملة."})
+    
+    prompt = f"""
+سعر العملة {symbol.upper()} الآن هو {price:.6f}$.
+الإطار الزمني: {timeframe}
+قم بتحليل التشارت الأسبوعي فقط للعملة اعتمادًا على:
+- خطوط الدعم والمقاومة.
+- مؤشرات RSI و MACD و MA.
+- Bollinger Bands
+- Fibonacci Levels
+- Stochastic Oscillator
+- Volume Analysis
+- Trendlines
+ثم قدّم:
+1. تقييم عام (صعود أم هبوط؟).
+2. أقرب مقاومة ودعم.
+3. السعر المستهدف المتوقع (نطاق سعري).
+✅ استخدم العربية فقط.
+"""
+    analysis = await ask_groq(prompt, lang)
+    return web.json_response({"status":"ok","analysis":analysis,"price":price})
 
-    lang = user_lang.get(user_id, "ar")
-    kb = {
-        "inline_keyboard": [
-            [
-                {"text": "أسبوعي", "callback_data": "tf_weekly"},
-                {"text": "يومي", "callback_data": "tf_daily"},
-                {"text": "4 ساعات", "callback_data": "tf_4h"}
-            ]
-        ]
-    }
-    if lang != "ar":
-        kb["inline_keyboard"] = [
-            [
-                {"text": "Weekly", "callback_data": "tf_weekly"},
-                {"text": "Daily", "callback_data": "tf_daily"},
-                {"text": "4H", "callback_data": "tf_4h"}
-            ]
-        ]
-    await send_message(user_id, "⏳ اختر الإطار الزمني للتحليل:" if lang=="ar" else "⏳ Select timeframe for analysis:", reply_markup=kb)
-    return web.Response(text="تم إرسال الرمز للبوت.")
-
+# =========================
+# Setup app
+# =========================
 app = web.Application()
-jinja_setup(app, loader=jinja2.FileSystemLoader("templates"))
-app.router.add_get("/", index)
-app.router.add_get("/interact/{user_id}", interact)
-app.router.add_post("/send_symbol", send_symbol)
-app.router.add_static("/static", "static")
+aiohttp_jinja2.setup(app, loader=jinja2.FileSystemLoader("templates"))
 
-if __name__ == "__main__":
-    web.run_app(app, host="0.0.0.0", port=MINI_PORT)
+app.router.add_get("/", index)
+app.router.add_post("/analyze", analyze)
+
+async def start():
+    runner = web.AppRunner(app)
+    await runner.setup()
+    site = web.TCPSite(runner, "0.0.0.0", PORT)
+    await site.start()
+    print(f"✅ Mini App running on port {PORT}...")
+    while True:
+        await asyncio.sleep(3600)
+
+if __name__=="__main__":
+    asyncio.run(start())
