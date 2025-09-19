@@ -3,51 +3,54 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Mini App Bot</title>
-<link rel="stylesheet" href="/static/style.css">
+<title>Crypto bot | بوت تحليل العملات</title>
+<style>
+body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg,#1e3c72,#2a5298); color:#fff; margin:0;padding:0;font-size:14px; }
+.container { max-width:800px;margin:50px auto;padding:25px;background-color:rgba(0,0,0,0.5);border-radius:20px;box-shadow:0 8px 20px rgba(0,0,0,0.6);text-align:center; }
+.bot-image { width:150px;height:150px;border-radius:30px;object-fit:cover;margin-bottom:15px;border:3px solid #ffd700;box-shadow:0 5px 15px rgba(0,0,0,0.5); }
+.bot-title { font-size:1.6rem;color:#ffd700;margin-bottom:20px;text-shadow:1px 1px 5px #000; }
+ul { list-style:none;padding:0; }
+li { background-color: rgba(255,255,255,0.1); margin:8px 0; padding:15px; border-radius:15px; font-size:0.95rem; line-height:1.5; display:flex; align-items:flex-start; opacity:0; transform:translateY(20px); transition: all 0.6s ease-out; }
+li.visible { opacity:1; transform:translateY(0); }
+.emoji { font-size:1.8rem; margin-right:12px; }
+.feature-text { flex:1; text-align:left; }
+.highlight { color:#ffd700; font-weight:bold; }
+</style>
 </head>
 <body>
+
 <div class="container">
-    <h1>Mini App لتحليل العملات</h1>
-    <form id="startForm">
-        <label>معرّف المستخدم على تيليجرام:</label>
-        <input type="text" id="user_id" placeholder="أدخل user ID" required>
-        <button type="submit">ابدأ</button>
-    </form>
+    <img class="bot-image" src="https://i.postimg.cc/NMY0c6Nf/IMG-4506.jpg" alt="Bot Image">
+    <div class="bot-title">Crypto bot | بوت تحليل العملات</div>
 
-    <div id="symbolFormDiv" style="display:none;">
-        <label>رمز العملة:</label>
-        <input type="text" id="symbol" placeholder="BTC, ETH..." required>
-        <label>السعر الحالي (اختياري):</label>
-        <input type="number" id="price" placeholder="مثال: 30000">
-        <button id="sendSymbolBtn">إرسال للعملية</button>
-    </div>
-
-    <div id="status"></div>
+    <ul>
+        <li><span class="emoji">💹</span><div class="feature-text"><span class="highlight">تحليل العملات:</span> تحليل كامل مع أهداف مستقبلية حسب الإطار الزمني.</div></li>
+        <li><span class="emoji">⏱️</span><div class="feature-text"><span class="highlight">اختيار الإطار الزمني:</span> أزرار صغيرة لإختيار 1D، 1W، 1M.</div></li>
+        <li><span class="emoji">🔒</span><div class="feature-text"><span class="highlight">آمن:</span> user ID مأخوذ تلقائي من Telegram WebApp.</div></li>
+    </ul>
 </div>
 
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-document.getElementById("startForm").addEventListener("submit", async function(e){
-    e.preventDefault();
-    const user_id = document.getElementById("user_id").value;
-    const res = await fetch(`/interact/${user_id}`);
-    const text = await res.text();
-    document.getElementById("status").innerText = text;
-    document.getElementById("symbolFormDiv").style.display = "block";
-});
+const tg = window.Telegram.WebApp;
+tg.expand();
 
-document.getElementById("sendSymbolBtn").addEventListener("click", async function(){
-    const user_id = document.getElementById("user_id").value;
-    const symbol = document.getElementById("symbol").value;
-    const price = document.getElementById("price").value || 0;
-    const res = await fetch("/send_symbol", {
-        method: "POST",
-        headers: {"Content-Type":"application/json"},
-        body: JSON.stringify({user_id, symbol, price})
+// هنا الـ user_id مأخوذ تلقائي من initDataUnsafe
+const userId = tg.initDataUnsafe.user.id;
+
+// Fade-in animation للقائمة
+const items = document.querySelectorAll('li');
+const observer = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+        if(entry.isIntersecting){
+            entry.target.classList.add('visible');
+        }
     });
-    const text = await res.text();
-    document.getElementById("status").innerText = text;
-});
+},{threshold:0.2});
+items.forEach(item=>observer.observe(item));
+
+// يمكنك إرسال userId تلقائيًا للبوت عبر API أو fetch إذا أردت
+// مثال: fetch("/api/send_user", {method:"POST", body:JSON.stringify({user_id:userId})});
 </script>
 </body>
 </html>
