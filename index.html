@@ -15,17 +15,16 @@
         --text-light: #f0f8ff;
     }
 
+    /* === SCROLL FIX START === */
     body {
         margin: 0;
+        padding: 50px 20px; /* Add padding for spacing on scroll */
         font-family: 'Poppins', 'Tajawal', sans-serif;
         background-color: var(--bg-dark);
         color: var(--text-light);
-        overflow: hidden;
-        min-height: 100vh;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        /* REMOVED overflow: hidden to allow scrolling */
     }
+    /* === SCROLL FIX END === */
 
     .hologram-scene {
         position: fixed;
@@ -35,6 +34,7 @@
         justify-content: center;
         align-items: center;
         perspective: 1000px;
+        z-index: -1; /* Place it behind the content */
     }
 
     /* --- Holographic Grid --- */
@@ -143,10 +143,12 @@
         border: 1px solid rgba(0, 231, 255, 0.3);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        position: relative;
+        position: relative; /* Keep it relative to the document flow */
         z-index: 10;
         animation: fade-in 2s ease-out forwards;
         opacity: 0;
+         /* SCROLL FIX: Let margin handle centering instead of flexbox on body */
+        margin: 0 auto;
     }
     @keyframes fade-in { to { opacity: 1; } }
 
@@ -180,8 +182,7 @@
     .emoji { font-size: 1.8rem; margin-right: 15px; }
     .feature-text { flex: 1; text-align: left; font-weight: 500; }
     .highlight { color: var(--glow-cyan); font-weight: 700; }
-
-    /* === BUTTON REDESIGN START === */
+    
     .cta-button {
         display: none;
         margin-top: 25px;
@@ -197,11 +198,9 @@
         position: relative;
         text-shadow: 0 0 10px var(--glow-cyan);
         box-shadow: 0 0 15px var(--glow-cyan), inset 0 0 10px rgba(0, 231, 255, 0.3);
-        /* Geometric shape with cut corners */
         clip-path: polygon(15px 0, calc(100% - 15px) 0, 100% 15px, 100% calc(100% - 15px), calc(100% - 15px) 100%, 15px 100%, 0 calc(100% - 15px), 0 15px);
         animation: pulse-glow-btn 3s infinite ease-in-out;
     }
-
     @keyframes pulse-glow-btn {
         50% {
             border-color: var(--glow-magenta);
@@ -209,7 +208,6 @@
             text-shadow: 0 0 15px var(--glow-magenta);
         }
     }
-
     .cta-button:hover {
         background: var(--glow-cyan);
         color: var(--bg-dark);
@@ -217,7 +215,6 @@
         box-shadow: 0 0 30px var(--glow-cyan), 0 0 50px var(--glow-cyan);
         transform: translateY(-5px);
     }
-    /* === BUTTON REDESIGN END === */
 
 </style>
 </head>
