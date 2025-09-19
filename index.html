@@ -7,156 +7,181 @@
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700&family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
     :root {
-        --primary-glow: #00f6ff;
-        --secondary-glow: #7d2eff;
-        --bg-color: #020413;
-        --card-bg: rgba(18, 11, 40, 0.65);
-        --text-color: #e0e6f1;
-        --highlight-color: #00f6ff;
+        --primary-accent: #00e7ff; /* Cyan glow */
+        --secondary-accent: #ff00ea; /* Magenta glow */
+        --bg-dark: #0A0A10;
+        --card-bg-light: rgba(255, 255, 255, 0.08);
+        --card-bg-dark: rgba(0, 0, 0, 0.4);
+        --text-light: #f0f8ff;
+        --text-muted: #a7b7cc;
+        --gradient-green: linear-gradient(90deg, #1afa47, #00d4ff); /* Crypto bullish */
+        --gradient-red: linear-gradient(90deg, #ff4d4d, #ff00c8); /* Crypto bearish */
+    }
+
+    @keyframes chart-pan {
+        0% { background-position: 0% 0%; }
+        100% { background-position: 100% 100%; }
+    }
+
+    @keyframes particle-glow {
+        0%, 100% { box-shadow: 0 0 10px var(--primary-accent), 0 0 20px var(--secondary-accent); }
+        50% { box-shadow: 0 0 15px var(--primary-accent), 0 0 25px var(--secondary-accent); }
+    }
+    
+    @keyframes floating {
+        0%, 100% { transform: translateY(0) scale(1); opacity: 0.8; }
+        50% { transform: translateY(-10px) scale(1.02); opacity: 1; }
+    }
+
+    @keyframes border-glow-anim {
+        0% { border-color: rgba(0, 231, 255, 0.3); box-shadow: 0 0 25px rgba(0, 231, 255, 0.2); }
+        25% { border-color: rgba(255, 0, 234, 0.3); box-shadow: 0 0 25px rgba(255, 0, 234, 0.2); }
+        50% { border-color: rgba(0, 231, 255, 0.3); box-shadow: 0 0 25px rgba(0, 231, 255, 0.2); }
+        75% { border-color: rgba(255, 0, 234, 0.3); box-shadow: 0 0 25px rgba(255, 0, 234, 0.2); }
+        100% { border-color: rgba(0, 231, 255, 0.3); box-shadow: 0 0 25px rgba(0, 231, 255, 0.2); }
     }
 
     body {
         margin: 0;
         padding: 0;
         font-family: 'Poppins', 'Tajawal', sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-color);
+        background-color: var(--bg-dark);
+        color: var(--text-light);
         overflow-x: hidden;
+        min-height: 100vh;
+        position: relative;
+    }
+
+    /* Animated Chart Background */
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-image:
+            url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="none" stroke="%2300E7FF" stroke-width="0.5" d="M0,80 C10,60 20,70 30,50 C40,30 50,40 60,20 C70,0 80,10 90,30 C100,50 110,70 120,50" /><path fill="none" stroke="%23ff00ea" stroke-width="0.5" d="M0,60 C10,75 20,65 30,85 C40,95 50,80 60,60 C70,40 80,50 90,30 C100,10 110,20 120,40" /></svg>'),
+            url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect x="10" y="30" width="8" height="30" fill="%231afa47"/><rect x="25" y="50" width="8" height="15" fill="%231afa47"/><rect x="40" y="20" width="8" height="45" fill="%23ff4d4d"/><rect x="55" y="60" width="8" height="10" fill="%231afa47"/><rect x="70" y="40" width="8" height="25" fill="%23ff4d4d"/><rect x="85" y="70" width="8" height="15" fill="%231afa47"/></svg>');
+        background-size: 200% 200%, 150% 150%;
+        opacity: 0.15;
+        z-index: -1;
+        animation: chart-pan 120s linear infinite alternate;
+    }
+
+    /* Floating Particles */
+    .particle {
+        position: absolute;
+        background: radial-gradient(circle, var(--primary-accent) 0%, transparent 60%);
+        border-radius: 50%;
+        opacity: 0;
+        animation: floating 15s infinite ease-in-out;
+        z-index: -1;
+    }
+
+    /* Content Wrapper for centering */
+    .content-wrapper {
         display: flex;
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-    }
-
-    .background-grid {
-        position: fixed;
-        top: 0;
-        left: 0;
         width: 100%;
-        height: 100%;
-        background-image:
-            linear-gradient(rgba(13, 17, 23, 0) 0%, var(--bg-color) 90%),
-            radial-gradient(ellipse at top, rgba(0, 246, 255, 0.15), transparent 60%),
-            radial-gradient(ellipse at bottom, rgba(125, 46, 255, 0.15), transparent 60%),
-            linear-gradient(to right, rgba(20, 20, 40, 0.5) 1px, transparent 1px),
-            linear-gradient(to bottom, rgba(20, 20, 40, 0.5) 1px, transparent 1px);
-        background-size: 100% 100%, 100% 100%, 100% 100%, 40px 40px, 40px 40px;
-        z-index: -1;
-        animation: pan-grid 120s linear infinite;
-    }
-
-    @keyframes pan-grid {
-        0% { background-position: 0% 0%; }
-        100% { background-position: 200% 200%; }
     }
 
     .container {
         max-width: 900px;
-        margin: 40px 20px;
+        width: 90%;
         padding: 40px;
-        background-color: var(--card-bg);
+        background-color: var(--card-bg-dark);
         border-radius: 25px;
-        box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 15px 60px rgba(0,0,0,0.7), inset 0 0 20px rgba(255,255,255,0.05);
         text-align: center;
-        border: 1px solid rgba(255, 255, 255, 0.1);
-        backdrop-filter: blur(12px);
-        -webkit-backdrop-filter: blur(12px);
+        border: 2px solid; /* Animated border */
+        animation: border-glow-anim 10s linear infinite;
+        backdrop-filter: blur(20px) brightness(0.7);
+        -webkit-backdrop-filter: blur(20px) brightness(0.7);
+        position: relative;
+        z-index: 2; /* Above the background */
     }
 
     .bot-image {
-        width: 140px;
-        height: 140px;
+        width: 150px;
+        height: 150px;
         border-radius: 50%;
         object-fit: cover;
-        margin-bottom: 20px;
-        border: 3px solid transparent;
-        background-image: linear-gradient(var(--card-bg), var(--card-bg)),
-                          linear-gradient(45deg, var(--primary-glow), var(--secondary-glow));
-        background-origin: border-box;
-        background-clip: content-box, border-box;
-        box-shadow: 0 0 25px rgba(0, 246, 255, 0.3);
-        animation: spin-glow 8s linear infinite;
-    }
-    
-    @keyframes spin-glow {
-        to {
-            background-image: linear-gradient(var(--card-bg), var(--card-bg)),
-                              linear-gradient(405deg, var(--primary-glow), var(--secondary-glow));
-        }
+        margin-bottom: 25px;
+        border: 4px solid var(--primary-accent);
+        box-shadow: 0 0 25px var(--primary-accent), 0 0 40px var(--primary-accent);
+        animation: particle-glow 3s ease-in-out infinite alternate;
     }
 
     .bot-title {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
         font-weight: 700;
-        text-shadow: 0 0 15px rgba(0, 0, 0, 0.7);
-        margin-bottom: 30px;
-        opacity: 0;
-        transform: translateY(-20px);
-        animation: fade-down 1s ease forwards;
+        margin-bottom: 35px;
+        text-shadow: 0 0 15px rgba(0,0,0,0.8);
     }
     .bot-title span {
-        background: linear-gradient(45deg, var(--primary-glow), #fff);
+        background: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent));
         -webkit-background-clip: text;
         -webkit-text-fill-color: transparent;
-    }
-
-    @keyframes fade-down {
-        to { opacity: 1; transform: translateY(0); }
     }
 
     .language-select {
         display: flex;
         justify-content: center;
-        gap: 20px;
-        margin-bottom: 30px;
+        gap: 25px;
+        margin-bottom: 40px;
     }
 
     .lang-card {
-        padding: 15px 25px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 15px;
+        padding: 15px 30px;
+        background: var(--card-bg-light);
+        border-radius: 18px;
         cursor: pointer;
         font-size: 1.1rem;
         font-weight: 600;
-        border: 1px solid rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255,255,255,0.2);
         transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     }
 
     .lang-card:hover {
-        transform: translateY(-5px);
-        background: rgba(255, 255, 255, 0.1);
-        box-shadow: 0 0 15px rgba(0, 246, 255, 0.2);
+        transform: translateY(-5px) scale(1.05);
+        background: rgba(255,255,255,0.15);
+        box-shadow: 0 0 20px rgba(0, 231, 255, 0.4);
     }
 
     ul {
         list-style: none;
         padding: 0;
         display: none;
-        margin-bottom: 30px;
+        margin-bottom: 40px;
     }
 
     li {
-        background: rgba(0, 0, 0, 0.2);
-        margin: 12px 0;
-        padding: 18px 22px;
-        border-radius: 15px;
-        border-left: 3px solid var(--primary-glow);
+        background: var(--card-bg-light);
+        margin: 15px 0;
+        padding: 20px 25px;
+        border-radius: 18px;
+        border-left: 4px solid var(--primary-accent);
         font-size: 1rem;
         display: flex;
         align-items: center;
         opacity: 0;
-        transform: translateX(-30px);
-        transition: all 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+        transform: translateY(20px);
+        transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+        color: var(--text-muted);
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2);
     }
 
     li.visible {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateY(0);
     }
 
     .emoji {
-        font-size: 1.8rem;
-        margin-right: 15px;
+        font-size: 2rem;
+        margin-right: 18px;
+        filter: drop-shadow(0 0 8px var(--primary-accent));
     }
 
     .feature-text {
@@ -166,63 +191,87 @@
     }
 
     .highlight {
-        color: var(--highlight-color);
+        background: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
         font-weight: 700;
     }
 
     .cta-button {
         display: none;
-        margin-top: 25px;
-        padding: 18px 55px;
-        font-size: 1.4rem;
+        margin-top: 30px;
+        padding: 18px 60px;
+        font-size: 1.5rem;
         font-weight: 700;
-        color: #fff;
-        background: linear-gradient(45deg, var(--secondary-glow), var(--primary-glow));
+        color: var(--bg-dark); /* Dark text on bright button */
+        background: linear-gradient(45deg, var(--primary-accent), var(--secondary-accent));
         border: none;
         border-radius: 50px;
         cursor: pointer;
         text-decoration: none;
-        transition: all 0.3s ease;
-        box-shadow: 0 5px 20px rgba(125, 46, 255, 0.4);
-        animation: pulse 2s infinite, appear-up 0.8s ease forwards;
+        transition: all 0.4s ease;
+        box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 30px rgba(0, 231, 255, 0.6);
+        animation: pulse-glow-btn 2.5s infinite ease-in-out;
     }
     
-    @keyframes appear-up {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
+    @keyframes pulse-glow-btn {
+        0%, 100% { transform: scale(1); box-shadow: 0 8px 30px rgba(0,0,0,0.5), 0 0 30px rgba(0, 231, 255, 0.6); }
+        50% { transform: scale(1.03); box-shadow: 0 12px 40px rgba(0,0,0,0.7), 0 0 45px rgba(0, 231, 255, 0.8); }
     }
 
     .cta-button:hover {
         transform: translateY(-5px) scale(1.05);
-        box-shadow: 0 10px 30px rgba(0, 246, 255, 0.5);
-    }
-    
-    @keyframes pulse {
-        0% { transform: scale(1); }
-        50% { transform: scale(1.03); }
-        100% { transform: scale(1); }
+        box-shadow: 0 15px 40px rgba(0,0,0,0.8), 0 0 60px rgba(0, 231, 255, 1);
     }
 </style>
 </head>
 <body>
-<div class="background-grid"></div>
+<div id="particle-container"></div>
 
-<div class="container">
-    <img class="bot-image" src="https://i.postimg.cc/jjpxh9yP/IMG-4577.jpg" alt="Bot Image">
-    <div class="bot-title">
-        <span>Crypto bot</span> | بوت تحليل العملات
+<div class="content-wrapper">
+    <div class="container">
+        <img class="bot-image" src="https://i.postimg.cc/jjpxh9yP/IMG-4577.jpg" alt="Bot Image">
+        <div class="bot-title">
+            <span>Crypto bot</span> | بوت تحليل العملات
+        </div>
+
+        <div class="language-select">
+            <div class="lang-card" onclick="chooseLanguage('en')">🇬🇧 English</div>
+            <div class="lang-card" onclick="chooseLanguage('ar')">🇸🇦 العربية</div>
+        </div>
+
+        <ul id="features-list"></ul>
+        <a class="cta-button" id="start-btn" href="https://t.me/AiCryptoGPTbot?start=1" target="_blank">Start Now 🚀</a>
     </div>
-
-    <div class="language-select">
-        <div class="lang-card" onclick="chooseLanguage('en')">🇬🇧 English</div>
-        <div class="lang-card" onclick="chooseLanguage('ar')">🇸🇦 العربية</div>
-    </div>
-
-    <ul id="features-list"></ul>
-    <a class="cta-button" id="start-btn" href="https://t.me/AiCryptoGPTbot?start=1" target="_blank">Start Now 🚀</a>
 </div>
 
 <script>
+// Particle System Logic
+const particleContainer = document.getElementById('particle-container');
+const numParticles = 25; // Number of floating particles
+
+for (let i = 0; i < numParticles; i++) {
+    const particle = document.createElement('div');
+    particle.classList.add('particle');
+    
+    // Random size
+    const size = Math.random() * 15 + 10; // 10px to 25px
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    
+    // Random position
+    particle.style.top = `${Math.random() * 100}%`;
+    particle.style.left = `${Math.random() * 100}%`;
+    
+    // Random animation delay and duration
+    particle.style.animationDelay = `${Math.random() * 10}s`;
+    particle.style.animationDuration = `${10 + Math.random() * 10}s`; // 10s to 20s
+    particle.style.opacity = `${0.2 + Math.random() * 0.4}`; // 0.2 to 0.6
+    
+    particleContainer.appendChild(particle);
+}
+
+
 const features = {
     en:[
         {emoji:"📈", text:"<span class='highlight'>Chart Analysis:</span> Support & Resistance, RSI, MACD, Moving Averages."},
@@ -261,7 +310,6 @@ function chooseLanguage(lang){
             const li = document.createElement('li');
             li.innerHTML = `<span class="emoji">${feature.emoji}</span><div class="feature-text">${feature.text}</div>`;
             featuresList.appendChild(li);
-            // Trigger reflow to apply transition
             window.getComputedStyle(li).opacity; 
             li.classList.add('visible');
         }, index * 200); // Faster animation
