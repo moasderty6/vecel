@@ -20,7 +20,7 @@
         position: fixed;
         top:0; left:0;
         width:200%; height:200%;
-        background: url('https://i.postimg.cc/bJK4WDTB/IMG-4578.gif') repeat;
+        background: url('https://i.postimg.cc/Z5k7q9Ww/crypto-chart-bg.jpg') repeat;
         background-size: cover;
         filter: blur(7px) brightness(0.35);
         z-index:-1;
@@ -44,8 +44,8 @@
     }
 
     .bot-image {
-        width: 160px;
-        height: 160px;
+        width: 150px;
+        height: 150px;
         border-radius: 30px;
         object-fit: cover;
         margin-bottom: 20px;
@@ -54,11 +54,19 @@
     }
 
     .bot-title {
-        font-size: 2.5rem;
+        font-size: 1.9rem; /* صغر الخط */
         color: #ffd700;
         font-weight: 700;
         text-shadow: 2px 2px 12px #000;
         margin-bottom: 30px;
+        opacity: 0;
+        transform: scale(0.8);
+        animation: fadeZoom 1.2s ease forwards;
+    }
+
+    @keyframes fadeZoom {
+        0% {opacity:0; transform: scale(0.8);}
+        100% {opacity:1; transform: scale(1);}
     }
 
     .language-select {
@@ -73,7 +81,7 @@
         background: rgba(255,255,255,0.1);
         border-radius: 20px;
         cursor: pointer;
-        font-size: 1.2rem;
+        font-size: 1.1rem;
         font-weight: 600;
         display: flex;
         align-items: center;
@@ -134,8 +142,8 @@
     .cta-button {
         display:none;
         margin-top: 25px;
-        padding: 18px 55px;
-        font-size:1.6rem;
+        padding: 16px 50px;
+        font-size:1.4rem;
         font-weight:700;
         color:#fff;
         background: rgba(255,255,255,0.1);
