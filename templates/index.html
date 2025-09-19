@@ -5,110 +5,56 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crypto bot | بوت تحليل العملات</title>
 <style>
-body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin:0; padding:0; background:linear-gradient(135deg,#1e3c72,#2a5298); color:#fff; font-size:14px; }
-.container { max-width:800px; margin:30px auto; padding:25px; background-color:rgba(0,0,0,0.5); border-radius:20px; box-shadow:0 8px 20px rgba(0,0,0,0.6); text-align:center; }
-.bot-image { width:150px; height:150px; border-radius:30px; object-fit:cover; margin-bottom:15px; border:3px solid #ffd700; box-shadow:0 5px 15px rgba(0,0,0,0.5); }
-.bot-title { font-size:1.6rem; color:#ffd700; margin-bottom:20px; text-shadow:1px 1px 5px #000; }
-.lang-buttons { display:flex; justify-content:center; gap:15px; margin-bottom:20px; flex-wrap:wrap; }
-.lang-buttons button { padding:10px 25px; border-radius:20px; border:none; cursor:pointer; background: rgba(255,255,255,0.2); color:#fff; font-weight:bold; transition:0.3s; }
-.lang-buttons button.selected { background: rgba(255,255,255,0.5); color:#000; }
-.input-group { display:none; flex-direction:column; align-items:center; gap:15px; margin-bottom:15px; }
-.input-group input[type=text] { padding:10px 15px; border-radius:12px; border:none; font-size:1rem; width:250px; }
-.time-buttons { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-.btn-time { padding:10px 15px; border-radius:12px; border:none; cursor:pointer; background: rgba(255,255,255,0.2); color:#fff; font-weight:bold; transition:0.3s; }
-.btn-time.selected { background: rgba(255,255,255,0.5); color:#000; }
-.start-analyze { display:inline-block; padding:12px 30px; font-size:1rem; font-weight:bold; color:#fff; background: rgba(255,255,255,0.1); border-radius:20px; border:2px solid rgba(255,255,255,0.3); backdrop-filter:blur(10px); cursor:pointer; transition:0.3s; margin-bottom:15px; display:none; }
-.start-analyze:hover { background: rgba(255,255,255,0.3); color:#000; transform:scale(1.05); }
-#result { text-align:left; background: rgba(255,255,255,0.1); padding:15px; border-radius:15px; min-height:120px; max-height:400px; overflow-y:auto; display:none; }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #fff;
+    margin:0; padding:0; font-size:14px;
+}
+.container {
+    max-width: 600px;
+    margin: 30px auto;
+    padding: 20px;
+    background-color: rgba(0,0,0,0.5);
+    border-radius: 20px;
+    text-align:center;
+}
+.bot-image { width:150px; height:150px; border-radius:30px; margin-bottom:15px; border:3px solid #ffd700; object-fit:cover;}
+.bot-title { font-size:1.6rem; color:#ffd700; margin-bottom:20px; text-shadow:1px 1px 5px #000;}
+input, select { width:80%; padding:10px; margin:8px 0; border-radius:10px; border:none; font-size:1rem;}
+button { margin-top:10px; padding:12px 25px; font-size:1.1rem; border-radius:15px; border:none; cursor:pointer; background: rgba(255,255,255,0.2); color:#fff;}
 </style>
 </head>
 <body>
-
 <div class="container">
-    <img class="bot-image" src="https://i.postimg.cc/NMY0c6Nf/IMG-4506.jpg" alt="Bot Image">
-    <div class="bot-title">Crypto bot | بوت تحليل العملات</div>
+<img class="bot-image" src="https://i.postimg.cc/NMY0c6Nf/IMG-4506.jpg" alt="Bot Image">
+<div class="bot-title">Crypto bot | بوت تحليل العملات</div>
 
-    <div class="lang-buttons">
-        <button data-lang="ar">🇸🇦 العربية</button>
-        <button data-lang="en">🇺🇸 English</button>
-    </div>
+<!-- إدخال العملة -->
+<input id="symbol" placeholder="أدخل رمز العملة">
 
-    <div class="input-group" id="currencyGroup">
-        <input type="text" id="symbol" placeholder="رمز العملة مثل BTC">
-        <div class="time-buttons">
-            <button class="btn-time" data-time="1D">1D</button>
-            <button class="btn-time" data-time="1W">1W</button>
-            <button class="btn-time" data-time="1M">1M</button>
-        </div>
-    </div>
+<!-- اختيار الإطار الزمني -->
+<select id="timeframe">
+    <option value="1D">يومي (1D)</option>
+    <option value="1W">أسبوعي (1W)</option>
+    <option value="1M">شهري (1M)</option>
+</select>
 
-    <button class="start-analyze" id="analyzeBtn">تحليل العملة</button>
-    <div id="result"></div>
+<button onclick="sendData()">تحليل العملة</button>
+
+<div id="result" style="margin-top:15px;"></div>
 </div>
 
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
 <script>
-const tg = window.Telegram.WebApp;
-tg.expand();
-
-let selectedLang = null;
-let selectedTime = "1W";
-
-const langButtons = document.querySelectorAll(".lang-buttons button");
-langButtons.forEach(btn=>{
-    btn.addEventListener("click",()=>{
-        langButtons.forEach(b=>b.classList.remove("selected"));
-        btn.classList.add("selected");
-        selectedLang = btn.getAttribute("data-lang");
-
-        // تعديل placeholder حسب اللغة
-        document.getElementById("symbol").placeholder = selectedLang==="ar"?"رمز العملة مثل BTC":"Enter coin symbol e.g. BTC";
-
-        document.getElementById("currencyGroup").style.display = "flex";
-        document.getElementById("analyzeBtn").style.display = "inline-block";
-        document.getElementById("result").style.display = "block";
-    });
-});
-
-// أزرار الإطار الزمني
-const timeButtons = document.querySelectorAll(".btn-time");
-timeButtons.forEach(btn=>{
-    btn.addEventListener("click",()=>{
-        timeButtons.forEach(b=>b.classList.remove("selected"));
-        btn.classList.add("selected");
-        selectedTime = btn.getAttribute("data-time");
-    });
-});
-
-// زر التحليل
-document.getElementById("analyzeBtn").addEventListener("click", async ()=>{
-    const symbol = document.getElementById("symbol").value.trim();
-    if(!symbol){ alert(selectedLang==="ar"?"الرجاء إدخال رمز العملة":"Please enter coin symbol"); return; }
-    const userId = tg.initDataUnsafe.user.id;
-
-    document.getElementById("result").innerHTML = selectedLang==="ar"?"⏳ جاري التحليل...":"⏳ Analyzing...";
-
-    try {
-        const res = await fetch("/analyze",{
-            method:"POST",
-            headers: {"Content-Type":"application/json"},
-            body: JSON.stringify({symbol:symbol, timeframe:selectedTime, user_id:userId, lang:selectedLang})
-        });
-        const data = await res.json();
-        if(data.status === "ok"){
-            document.getElementById("result").innerHTML = 
-                (selectedLang==="ar"?"<b>السعر الحالي:</b> $":"<b>Current Price:</b> $") 
-                + data.price.toFixed(6) 
-                + "<br><pre>" + data.analysis + "</pre>";
-        } else {
-            document.getElementById("result").innerHTML = data.msg;
-        }
-    } catch(e){
-        document.getElementById("result").innerHTML = selectedLang==="ar"?"❌ حدث خطأ أثناء التحليل":"❌ Analysis failed";
-        console.error(e);
-    }
-});
+function sendData(){
+    let sym = document.getElementById('symbol').value.trim();
+    let tf = document.getElementById('timeframe').value;
+    if(!sym){ alert("أدخل رمز العملة"); return; }
+    document.getElementById('result').innerHTML = "⏳ جاري التحليل...";
+    // استدعاء Webhook البوت
+    fetch("/", { method:"POST", headers:{"Content-Type":"application/json"}, body:JSON.stringify({message:{text:sym, from:{id:1}}, callback_query:{data:"tf_"+tf}}) })
+    .then(r=>r.text()).then(res=>{ document.getElementById('result').innerHTML = "✅ تم إرسال الطلب. تحقق من البوت في Telegram." })
+}
 </script>
-
 </body>
 </html>
