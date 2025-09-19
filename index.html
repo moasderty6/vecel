@@ -4,27 +4,43 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crypto Analysis Bot</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
 <style>
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap');
-
     body {
         font-family: 'Montserrat', sans-serif;
-        background: linear-gradient(135deg, #1e3c72, #2a5298);
-        color: #fff;
         margin: 0;
         padding: 0;
+        color: #fff;
         font-size: 14px;
+        overflow-x: hidden;
+    }
+
+    /* Animated blurry chart background */
+    body::before {
+        content: '';
+        position: fixed;
+        top:0; left:0; width:200%; height:200%;
+        background: url('https://i.postimg.cc/Z5k7q9Ww/crypto-chart-bg.jpg') repeat;
+        background-size: cover;
+        filter: blur(6px) brightness(0.5);
+        z-index: -1;
+        animation: moveBg 120s linear infinite;
+    }
+
+    @keyframes moveBg {
+        0% { transform: translate(0,0); }
+        50% { transform: translate(-10%, -5%); }
+        100% { transform: translate(0,0); }
     }
 
     .container {
         max-width: 800px;
         margin: 50px auto;
-        padding: 25px;
-        background-color: rgba(0,0,0,0.5);
+        padding: 30px;
+        background-color: rgba(0,0,0,0.55);
         border-radius: 20px;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.6);
         text-align: center;
-        backdrop-filter: blur(5px);
     }
 
     .bot-image {
@@ -38,57 +54,59 @@
     }
 
     .bot-title {
-        font-size: 1.8rem;
+        font-size: 2rem;
         color: #ffd700;
-        margin-bottom: 10px;
-        text-shadow: 1px 1px 5px #000;
         font-weight: 700;
+        text-shadow: 2px 2px 8px #000;
     }
 
     .bot-title-ar {
-        font-size: 1.8rem;
+        font-size: 2rem;
         color: #ffd700;
-        margin-bottom: 25px;
-        text-shadow: 1px 1px 5px #000;
         font-weight: 700;
+        margin-bottom: 25px;
+        text-shadow: 2px 2px 8px #000;
     }
 
     .language-select {
         margin-bottom: 25px;
+        display: flex;
+        justify-content: center;
+        gap: 15px;
     }
 
     .lang-btn {
-        padding: 12px 30px;
-        margin: 0 10px;
+        padding: 12px 20px;
         font-size: 1rem;
         font-weight: 600;
         border: none;
-        border-radius: 25px;
+        border-radius: 50px;
         cursor: pointer;
-        background: rgba(255, 255, 255, 0.15);
-        color: #fff;
-        display: inline-flex;
+        display: flex;
         align-items: center;
         gap: 8px;
+        background: rgba(255,255,255,0.15);
+        color: #fff;
         transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.4);
     }
 
     .lang-btn:hover {
-        background: rgba(255, 255, 255, 0.3);
+        background: rgba(255,255,255,0.3);
         transform: scale(1.05);
     }
 
     ul {
         list-style: none;
         padding: 0;
-        display: none; /* initially hidden */
+        display: none;
         margin-bottom: 20px;
     }
 
     li {
-        background-color: rgba(255, 255, 255, 0.1);
-        margin: 8px 0;
-        padding: 15px;
+        background-color: rgba(255, 255, 255, 0.08);
+        margin: 10px 0;
+        padding: 15px 20px;
         border-radius: 15px;
         font-size: 1rem;
         line-height: 1.5;
@@ -113,15 +131,17 @@
     .feature-text {
         flex: 1;
         text-align: left;
+        color: #e0e0e0;
+        font-weight: 500;
     }
 
     .highlight {
         color: #ffd700;
-        font-weight: bold;
+        font-weight: 700;
     }
 
     .cta-button {
-        display: none; /* initially hidden */
+        display: none;
         margin-top: 20px;
         padding: 18px 50px;
         font-size: 1.6rem;
@@ -162,54 +182,53 @@
 </div>
 
 <script>
-    const features = {
-        en: [
-            {emoji: "📈", text: "Advanced Chart Analysis: Uses support & resistance, RSI, MACD, Moving Averages for precise trend predictions."},
-            {emoji: "💹", text: "Multi-Indicator Strategy: Combines Bollinger Bands, Fibonacci Levels, Stochastic Oscillator, Volume Analysis, Trendlines for deeper insights."},
-            {emoji: "🤖", text: "AI-Powered Predictions: Analyzes historical data to generate accurate target price ranges and market direction."},
-            {emoji: "⚡", text: "Real-Time Updates: Quickly fetches the latest prices and provides instant analysis based on your chosen timeframe."},
-            {emoji: "🌟", text: "User-Friendly Interface: Simple, clean, and responsive design."},
-            {emoji: "🔒", text: "Secure & Reliable: No personal data required. Analysis is done safely."},
-            {emoji: "🚀", text: "Accessible Everywhere: Works on mobile, tablet, and desktop."}
-        ],
-        ar: [
-            {emoji: "📈", text: "تحليل رسوم بيانية متقدم: يستخدم الدعم والمقاومة، RSI، MACD، والمتوسطات المتحركة لتوقعات دقيقة للاتجاه."},
-            {emoji: "💹", text: "استراتيجية متعددة المؤشرات: يجمع بين Bollinger Bands، مستويات Fibonacci، Stochastic Oscillator، تحليل الحجم وخطوط الاتجاه للحصول على رؤية أعمق."},
-            {emoji: "🤖", text: "توقعات مدعومة بالذكاء الاصطناعي: يحلل البيانات التاريخية لتقديم نطاقات سعرية دقيقة واتجاه السوق."},
-            {emoji: "⚡", text: "تحديثات في الوقت الفعلي: يجلب أحدث الأسعار ويوفر التحليل الفوري بناءً على الإطار الزمني المختار."},
-            {emoji: "🌟", text: "واجهة سهلة الاستخدام: تصميم بسيط ونظيف ومتجاوب."},
-            {emoji: "🔒", text: "آمن وموثوق: لا حاجة للبيانات الشخصية، يتم التحليل بأمان."},
-            {emoji: "🚀", text: "متاح في كل مكان: يعمل على الهاتف والجهاز اللوحي وسطح المكتب."}
-        ]
-    };
+const features = {
+    en: [
+        {emoji: "📈", text: "Chart Analysis: Support & Resistance, RSI, MACD, Moving Averages."},
+        {emoji: "💹", text: "Multi-Indicator Strategy: Bollinger Bands, Fibonacci, Stochastic, Volume Analysis, Trendlines."},
+        {emoji: "🤖", text: "AI Predictions: Historical data for accurate target prices."},
+        {emoji: "⚡", text: "Real-Time Updates: Latest prices & analysis per timeframe."},
+        {emoji: "🌟", text: "User-Friendly Interface: Clean & responsive design."},
+        {emoji: "🔒", text: "Secure: No personal data required."},
+        {emoji: "🚀", text: "Accessible Everywhere: Mobile, tablet, desktop."}
+    ],
+    ar: [
+        {emoji: "📈", text: "تحليل الرسوم البيانية: الدعم والمقاومة، RSI، MACD، المتوسطات المتحركة."},
+        {emoji: "💹", text: "استراتيجية متعددة المؤشرات: Bollinger Bands، Fibonacci، Stochastic، تحليل الحجم، خطوط الاتجاه."},
+        {emoji: "🤖", text: "توقعات الذكاء الاصطناعي: بيانات تاريخية للحصول على أسعار دقيقة."},
+        {emoji: "⚡", text: "تحديثات فورية: أحدث الأسعار والتحليل حسب الإطار الزمني."},
+        {emoji: "🌟", text: "واجهة سهلة الاستخدام: تصميم نظيف ومتجاوب."},
+        {emoji: "🔒", text: "آمن: لا حاجة للبيانات الشخصية."},
+        {emoji: "🚀", text: "متاح في كل مكان: الهاتف، الجهاز اللوحي، سطح المكتب."}
+    ]
+};
 
-    function chooseLanguage(lang) {
-        // اختفاء اختيار اللغة
-        const langDiv = document.querySelector('.language-select');
-        langDiv.style.transition = "opacity 0.5s";
-        langDiv.style.opacity = 0;
-        setTimeout(() => { langDiv.style.display = 'none'; }, 500);
+function chooseLanguage(lang) {
+    // اختفاء اختيار اللغة
+    const langDiv = document.querySelector('.language-select');
+    langDiv.style.transition = "opacity 0.5s";
+    langDiv.style.opacity = 0;
+    setTimeout(() => { langDiv.style.display = 'none'; }, 500);
 
-        // إظهار قائمة المميزات
-        const featuresList = document.getElementById('features-list');
-        featuresList.style.display = 'block';
-        featuresList.innerHTML = '';
+    // إظهار قائمة المميزات تدريجياً
+    const featuresList = document.getElementById('features-list');
+    featuresList.style.display = 'block';
+    featuresList.innerHTML = '';
 
-        // عرض المميزات تدريجياً
-        features[lang].forEach((f, i) => {
-            setTimeout(() => {
-                const li = document.createElement('li');
-                li.innerHTML = `<span class="emoji">${f.emoji}</span><div class="feature-text">${f.text}</div>`;
-                featuresList.appendChild(li);
-                li.classList.add('visible');
-            }, i * 400); // يظهر كل ميزة بعد 400ms
-        });
-
-        // إظهار زر البداية
+    features[lang].forEach((f, i) => {
         setTimeout(() => {
-            document.getElementById('start-btn').style.display = 'inline-block';
-        }, features[lang].length * 400 + 200);
-    }
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="emoji">${f.emoji}</span><div class="feature-text">${f.text}</div>`;
+            featuresList.appendChild(li);
+            li.classList.add('visible');
+        }, i * 700); // كل ميزة تظهر بعد 700ms
+    });
+
+    // إظهار زر البداية بعد انتهاء المميزات
+    setTimeout(() => {
+        document.getElementById('start-btn').style.display = 'inline-block';
+    }, features[lang].length * 700 + 200);
+}
 </script>
 
 </body>
