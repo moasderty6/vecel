@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crypto Analysis Bot</title>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap" rel="stylesheet">
 <style>
     body {
         margin:0;
@@ -15,7 +15,6 @@
         overflow-x: hidden;
     }
 
-    /* Animated blurred chart background */
     body::before {
         content: '';
         position: fixed;
@@ -69,7 +68,6 @@
         text-shadow: 2px 2px 10px #000;
     }
 
-    /* Language selection cards */
     .language-select {
         display: flex;
         justify-content: center;
@@ -94,6 +92,7 @@
     .lang-card:hover {
         transform: translateY(-5px) scale(1.05);
         background: rgba(255,255,255,0.25);
+        text-shadow: 0 0 10px #fff;
     }
 
     ul {
@@ -112,8 +111,8 @@
         display: flex;
         align-items: flex-start;
         opacity: 0;
-        transform: translateY(30px);
-        transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        transform: translateY(40px);
+        transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
         color: #e0e0e0;
     }
 
@@ -136,6 +135,7 @@
     .highlight {
         color:#ffd700;
         font-weight:700;
+        font-size:1.05rem;
     }
 
     .cta-button {
@@ -181,22 +181,22 @@
 <script>
 const features = {
     en:[
-        {emoji:"📈", text:"Chart Analysis: Support & Resistance, RSI, MACD, Moving Averages."},
-        {emoji:"💹", text:"Multi-Indicator Strategy: Bollinger Bands, Fibonacci, Stochastic, Volume, Trendlines."},
-        {emoji:"🤖", text:"AI Predictions: Historical data for accurate target prices."},
-        {emoji:"⚡", text:"Real-Time Updates: Latest prices & analysis per timeframe."},
-        {emoji:"🌟", text:"User-Friendly Interface: Clean & responsive design."},
-        {emoji:"🔒", text:"Secure: No personal data required."},
-        {emoji:"🚀", text:"Accessible Everywhere: Mobile, tablet, desktop."}
+        {emoji:"📈", text:"<span class='highlight'>Chart Analysis:</span> Support & Resistance, RSI, MACD, Moving Averages."},
+        {emoji:"💹", text:"<span class='highlight'>Multi-Indicator Strategy:</span> Bollinger Bands, Fibonacci, Stochastic, Volume, Trendlines."},
+        {emoji:"🤖", text:"<span class='highlight'>AI Predictions:</span> Historical data for accurate target prices."},
+        {emoji:"⚡", text:"<span class='highlight'>Real-Time Updates:</span> Latest prices & analysis per timeframe."},
+        {emoji:"🌟", text:"<span class='highlight'>User-Friendly Interface:</span> Clean & responsive design."},
+        {emoji:"🔒", text:"<span class='highlight'>Secure:</span> No personal data required."},
+        {emoji:"🚀", text:"<span class='highlight'>Accessible Everywhere:</span> Mobile, tablet, desktop."}
     ],
     ar:[
-        {emoji:"📈", text:"تحليل الرسوم البيانية: الدعم والمقاومة، RSI، MACD، المتوسطات المتحركة."},
-        {emoji:"💹", text:"استراتيجية متعددة المؤشرات: Bollinger Bands، Fibonacci، Stochastic، تحليل الحجم، خطوط الاتجاه."},
-        {emoji:"🤖", text:"توقعات الذكاء الاصطناعي: بيانات تاريخية للحصول على أسعار دقيقة."},
-        {emoji:"⚡", text:"تحديثات فورية: أحدث الأسعار والتحليل حسب الإطار الزمني."},
-        {emoji:"🌟", text:"واجهة سهلة الاستخدام: تصميم نظيف ومتجاوب."},
-        {emoji:"🔒", text:"آمن: لا حاجة للبيانات الشخصية."},
-        {emoji:"🚀", text:"متاح في كل مكان: الهاتف، الجهاز اللوحي، سطح المكتب."}
+        {emoji:"📈", text:"<span class='highlight'>تحليل الرسوم البيانية:</span> الدعم والمقاومة، RSI، MACD، المتوسطات المتحركة."},
+        {emoji:"💹", text:"<span class='highlight'>استراتيجية متعددة المؤشرات:</span> Bollinger Bands، Fibonacci، Stochastic، تحليل الحجم، خطوط الاتجاه."},
+        {emoji:"🤖", text:"<span class='highlight'>توقعات الذكاء الاصطناعي:</span> بيانات تاريخية للحصول على أسعار دقيقة."},
+        {emoji:"⚡", text:"<span class='highlight'>تحديثات فورية:</span> أحدث الأسعار والتحليل حسب الإطار الزمني."},
+        {emoji:"🌟", text:"<span class='highlight'>واجهة سهلة الاستخدام:</span> تصميم نظيف ومتجاوب."},
+        {emoji:"🔒", text:"<span class='highlight'>آمن:</span> لا حاجة للبيانات الشخصية."},
+        {emoji:"🚀", text:"<span class='highlight'>متاح في كل مكان:</span> الهاتف، الجهاز اللوحي، سطح المكتب."}
     ]
 };
 
@@ -218,13 +218,13 @@ function chooseLanguage(lang){
             li.innerHTML=`<span class="emoji">${f.emoji}</span><div class="feature-text">${f.text}</div>`;
             featuresList.appendChild(li);
             li.classList.add('visible');
-        }, i*600);
+        }, i*700); // ظهور تدريجي أبطأ
     });
 
     // زر البداية بعد انتهاء المميزات
     setTimeout(()=>{
         document.getElementById('start-btn').style.display='inline-block';
-    }, features[lang].length*600 + 400);
+    }, features[lang].length*700 + 400);
 }
 </script>
 
