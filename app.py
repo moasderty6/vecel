@@ -33,7 +33,7 @@ async def send_message(chat_id, text, reply_markup=None):
         await client.post(BOT_API_URL, json=payload)
 
 async def index(request):
-    return render_template("index.html", request=request)
+    return render_template("index.html", request=request, context={})
 
 async def interact(request):
     user_id = request.match_info.get("user_id")
