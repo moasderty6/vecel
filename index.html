@@ -40,16 +40,17 @@
         box-shadow: 0 5px 20px rgba(0,0,0,0.5);
     }
     .bot-title {
-        font-size: 1.6rem;
+        font-size: 1.8rem;
         color: #FFD700;
         text-shadow: 2px 2px 6px #000;
         font-weight: 700;
-        margin-bottom: 5px;
+        margin-bottom: 3px;
     }
     .bot-title-ar {
-        font-size: 1.4rem;
-        color: #fff;
-        text-shadow: 1px 1px 4px #000;
+        font-size: 1.8rem;
+        color: #FFD700;
+        text-shadow: 2px 2px 6px #000;
+        font-weight: 700;
         margin-bottom: 20px;
     }
     .language-select {
@@ -80,7 +81,7 @@
         list-style: none;
         padding: 0;
         margin-bottom: 20px;
-        display: none;
+        display: none; /* initially hidden */
     }
     li {
         background-color: rgba(255, 255, 255, 0.12);
@@ -93,6 +94,11 @@
         align-items: flex-start;
         opacity: 0;
         transform: translateY(25px);
+        transition: all 0.7s ease-out;
+    }
+    li.visible {
+        opacity: 1;
+        transform: translateY(0);
     }
     .emoji {
         font-size: 1.7rem;
@@ -144,7 +150,7 @@
 
     <ul id="features-list"></ul>
 
-    <a class="cta-button" id="start-btn" href="https://t.me/AiCryptoGPTbot?start" target="_blank">Start Now 🚀</a>
+    <a class="cta-button" id="start-btn" href="https://t.me/AiCryptoGPTbot?start=1" target="_blank">Start Now 🚀</a>
 </div>
 
 <script>
@@ -180,15 +186,16 @@
             li.innerHTML = `<span class="emoji">${f.emoji}</span><div class="feature-text">${f.text}</div>`;
             featuresList.appendChild(li);
 
+            // ظهور تدريجي لكل ميزة
             setTimeout(() => {
-                li.style.transition = "all 0.7s ease-out";
                 li.classList.add('visible');
-            }, index * 400); // تأخير تدريجي 400ms لكل ميزة
+            }, index * 500); // كل ميزة 500ms بعد السابقة
         });
 
+        // إظهار زر Start بعد ظهور كل المميزات
         setTimeout(() => {
             document.getElementById('start-btn').style.display = 'inline-block';
-        }, features[lang].length * 400 + 300);
+        }, features[lang].length * 500 + 300);
     }
 </script>
 </body>
