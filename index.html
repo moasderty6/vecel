@@ -40,11 +40,17 @@
         box-shadow: 0 5px 20px rgba(0,0,0,0.5);
     }
     .bot-title {
-        font-size: 1.8rem;
+        font-size: 1.6rem;
         color: #FFD700;
-        margin-bottom: 25px;
         text-shadow: 2px 2px 6px #000;
         font-weight: 700;
+        margin-bottom: 5px;
+    }
+    .bot-title-ar {
+        font-size: 1.4rem;
+        color: #fff;
+        text-shadow: 1px 1px 4px #000;
+        margin-bottom: 20px;
     }
     .language-select {
         display: flex;
@@ -128,7 +134,8 @@
 
 <div class="container">
     <img class="bot-image" src="https://i.postimg.cc/jjpxh9yP/IMG-4577.jpg" alt="Bot Image">
-    <div class="bot-title">Crypto Analysis Bot | بوت تحليل العملات</div>
+    <div class="bot-title">Crypto Analysis Bot</div>
+    <div class="bot-title-ar">- بوت تحليل العملات</div>
 
     <div class="language-select">
         <button class="lang-btn" onclick="chooseLanguage('en')">🇺🇸 English</button>
@@ -173,17 +180,15 @@
             li.innerHTML = `<span class="emoji">${f.emoji}</span><div class="feature-text">${f.text}</div>`;
             featuresList.appendChild(li);
 
-            // delayed fade-in for each feature
             setTimeout(() => {
                 li.style.transition = "all 0.7s ease-out";
                 li.classList.add('visible');
-            }, index * 350); // 350ms delay per item
+            }, index * 400); // تأخير تدريجي 400ms لكل ميزة
         });
 
-        // show start button after all features appear
         setTimeout(() => {
             document.getElementById('start-btn').style.display = 'inline-block';
-        }, features[lang].length * 350 + 300);
+        }, features[lang].length * 400 + 300);
     }
 </script>
 </body>
