@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mini App Bot</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div class="container">
+    <h1>Mini App لتحليل العملات</h1>
+    <form id="startForm">
+        <label>معرّف المستخدم على تيليجرام:</label>
+        <input type="text" id="user_id" placeholder="أدخل user ID" required>
+        <button type="submit">ابدأ</button>
+    </form>
+
+    <div id="symbolFormDiv" style="display:none;">
+        <label>رمز العملة:</label>
+        <input type="text" id="symbol" placeholder="BTC, ETH..." required>
+        <label>السعر الحالي (اختياري):</label>
+        <input type="number" id="price" placeholder="مثال: 30000">
+        <button id="sendSymbolBtn">إرسال للعملية</button>
+    </div>
+
+    <div id="status"></div>
+</div>
+
+<script>
+document.getElementById("startForm").addEventListener("submit", async function(e){
+    e.preventDefault();
+    const user_id = document.getElementById("user_id").value;
+    const res = await fetch(`/interact/${user_id}`);
+    const text = await res.text();
+    document.getElementById("status").innerText = text;
+    document.getElementById("symbolFormDiv").style.display = "block";
+});
+
+document.getElementById("sendSymbolBtn").addEventListener("click", async function(){
+    const user_id = document.getElementById("user_id").value;
+    const symbol = document.getElementById("symbol").value;
+    const price = document.getElementById("price").value || 0;
+    const res = await fetch("/send_symbol", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({user_id, symbol, price})
+    });
+    const text = await res.text();
+    document.getElementById("status").innerText = text;
+});
+</script>
+</body>
+</html>
