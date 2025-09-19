@@ -15,16 +15,12 @@
         --text-light: #f0f8ff;
     }
 
-    /* === SCROLL FIX START === */
     body {
         margin: 0;
-        padding: 50px 20px; /* Added padding for proper spacing when scrolled */
         font-family: 'Poppins', 'Tajawal', sans-serif;
         background-color: var(--bg-dark);
         color: var(--text-light);
-        /* The "overflow: hidden" property that was blocking the scroll has been removed. */
     }
-    /* === SCROLL FIX END === */
 
     .hologram-scene {
         position: fixed;
@@ -34,10 +30,9 @@
         justify-content: center;
         align-items: center;
         perspective: 1000px;
-        z-index: -1; /* Ensures the background stays behind the scrollable content */
+        z-index: -1;
     }
 
-    /* --- Holographic Grid --- */
     .grid {
         position: absolute;
         width: 600px; height: 600px;
@@ -52,7 +47,6 @@
         to { transform: rotateX(75deg) translateY(250px) rotateZ(360deg); }
     }
 
-    /* --- Projector Light --- */
     .projector {
         position: absolute;
         bottom: 0;
@@ -64,7 +58,6 @@
         50% { opacity: 0.7; }
     }
 
-    /* --- Animated Candlestick Chart --- */
     .chart-container {
         position: absolute;
         width: 500px; height: 300px;
@@ -115,7 +108,6 @@
     .candle:nth-child(6) { --h1: 90px; --h2: 110px; --h3: 150px; --h4: 120px; animation-delay: -1.5s; }
     .candle:nth-child(7) { --h1: 110px; --h2: 140px; --h3: 80px; --h4: 100px; animation-delay: -2.5s; }
 
-    /* --- Floating Crypto Symbols --- */
     .symbol {
         position: absolute;
         font-size: 2rem;
@@ -131,10 +123,20 @@
     .symbol.btc { color: #f7931a; top: 20%; left: 15%; animation-delay: 0s; }
     .symbol.eth { color: #627eea; top: 70%; left: 80%; animation-delay: -7s; }
 
-    /* --- Main Content Container --- */
+    /* === CENTERING FIX: Added a wrapper for content === */
+    .content-wrapper {
+        width: 100%;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 50px 20px;
+        box-sizing: border-box;
+    }
+    
     .container {
         max-width: 900px;
-        width: 90%;
+        width: 100%; /* Take full width of wrapper */
         padding: 40px;
         background-color: rgba(3, 4, 15, 0.7);
         border-radius: 25px;
@@ -145,11 +147,13 @@
         -webkit-backdrop-filter: blur(10px);
         position: relative;
         z-index: 10;
-        animation: fade-in 2s ease-out forwards;
         opacity: 0;
-        margin: 0 auto; /* Horizontally center the container */
+        /* === DELAY FIX: Added a 1s animation-delay === */
+        animation: fade-in 2s ease-out 1s forwards;
     }
-    @keyframes fade-in { to { opacity: 1; } }
+    @keyframes fade-in { 
+        to { opacity: 1; } 
+    }
 
     .bot-image {
         width: 140px; height: 140px;
@@ -235,19 +239,21 @@
     <div class="symbol eth">ETH</div>
 </div>
 
-<div class="container">
-    <img class="bot-image" src="https://i.postimg.cc/jjpxh9yP/IMG-4577.jpg" alt="Bot Image">
-    <div class="bot-title">
-        <span>Crypto bot</span> | بوت تحليل العملات
-    </div>
+<div class="content-wrapper">
+    <div class="container">
+        <img class="bot-image" src="https://i.postimg.cc/jjpxh9yP/IMG-4577.jpg" alt="Bot Image">
+        <div class="bot-title">
+            <span>Crypto bot</span> | بوت تحليل العملات
+        </div>
 
-    <div class="language-select">
-        <div class="lang-card" onclick="chooseLanguage('en')">🇬🇧 English</div>
-        <div class="lang-card" onclick="chooseLanguage('ar')">🇸🇦 العربية</div>
-    </div>
+        <div class="language-select">
+            <div class="lang-card" onclick="chooseLanguage('en')">🇬🇧 English</div>
+            <div class="lang-card" onclick="chooseLanguage('ar')">🇸🇦 العربية</div>
+        </div>
 
-    <ul id="features-list"></ul>
-    <a class="cta-button" id="start-btn" href="https://t.me/AiCryptoGPTbot?start" target="_blank">Start Now 🚀</a>
+        <ul id="features-list"></ul>
+        <a class="cta-button" id="start-btn" href="https://t.me/AiCryptoGPTbot?start" target="_blank">Start Now 🚀</a>
+    </div>
 </div>
 
 <script>
