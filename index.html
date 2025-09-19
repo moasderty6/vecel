@@ -18,11 +18,11 @@
     /* === SCROLL FIX START === */
     body {
         margin: 0;
-        padding: 50px 20px; /* Add padding for spacing on scroll */
+        padding: 50px 20px; /* Added padding for proper spacing when scrolled */
         font-family: 'Poppins', 'Tajawal', sans-serif;
         background-color: var(--bg-dark);
         color: var(--text-light);
-        /* REMOVED overflow: hidden to allow scrolling */
+        /* The "overflow: hidden" property that was blocking the scroll has been removed. */
     }
     /* === SCROLL FIX END === */
 
@@ -34,7 +34,7 @@
         justify-content: center;
         align-items: center;
         perspective: 1000px;
-        z-index: -1; /* Place it behind the content */
+        z-index: -1; /* Ensures the background stays behind the scrollable content */
     }
 
     /* --- Holographic Grid --- */
@@ -143,12 +143,11 @@
         border: 1px solid rgba(0, 231, 255, 0.3);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
-        position: relative; /* Keep it relative to the document flow */
+        position: relative;
         z-index: 10;
         animation: fade-in 2s ease-out forwards;
         opacity: 0;
-         /* SCROLL FIX: Let margin handle centering instead of flexbox on body */
-        margin: 0 auto;
+        margin: 0 auto; /* Horizontally center the container */
     }
     @keyframes fade-in { to { opacity: 1; } }
 
