@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crypto Analysis Bot</title>
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: #fff;
+        margin: 0;
+        padding: 0;
+        font-size: 14px;
+    }
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        padding: 25px;
+        background-color: rgba(0,0,0,0.5);
+        border-radius: 20px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+        text-align: center;
+    }
+    .bot-image {
+        width: 150px;
+        height: 150px;
+        border-radius: 30px;
+        object-fit: cover;
+        margin-bottom: 15px;
+        border: 3px solid #ffd700;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    }
+    .bot-title {
+        font-size: 1.6rem;
+        color: #ffd700;
+        margin-bottom: 20px;
+        text-shadow: 1px 1px 5px #000;
+    }
+    .language-select {
+        margin-bottom: 25px;
+    }
+    .lang-btn {
+        padding: 10px 25px;
+        margin: 0 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        background: rgba(255, 255, 255, 0.15);
+        color: #fff;
+        transition: all 0.3s ease;
+    }
+    .lang-btn:hover {
+        background: rgba(255, 255, 255, 0.3);
+        transform: scale(1.05);
+    }
+    ul {
+        list-style: none;
+        padding: 0;
+        display: none; /* initially hidden */
+        margin-bottom: 20px;
+    }
+    li {
+        background-color: rgba(255, 255, 255, 0.1);
+        margin: 8px 0;
+        padding: 15px;
+        border-radius: 15px;
+        font-size: 0.95rem;
+        line-height: 1.5;
+        display: flex;
+        align-items: flex-start;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.6s ease-out;
+    }
+    li.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    .emoji {
+        font-size: 1.8rem;
+        margin-right: 12px;
+    }
+    .feature-text {
+        flex: 1;
+        text-align: left;
+    }
+    .highlight {
+        color: #ffd700;
+        font-weight: bold;
+    }
+    .cta-button {
+        display: none; /* initially hidden */
+        margin-top: 15px;
+        padding: 18px 50px;
+        font-size: 1.6rem;
+        font-weight: 700;
+        color: #fff;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 25px;
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(255,255,255,0.3);
+        cursor: pointer;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+    }
+    .cta-button:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 12px 25px rgba(0,0,0,0.6);
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <img class="bot-image" src="https://i.postimg.cc/NMY0c6Nf/IMG-4506.jpg" alt="Bot Image">
+    <div class="bot-title">Crypto Analysis Bot | بوت تحليل العملات</div>
+
+    <div class="language-select">
+        <button class="lang-btn" onclick="chooseLanguage('en')">English</button>
+        <button class="lang-btn" onclick="chooseLanguage('ar')">العربية</button>
+    </div>
+
+    <ul id="features-list"></ul>
+
+    <a class="cta-button" id="start-btn" href="https://t.me/YourCryptoBot?start=1" target="_blank">Start Now 🚀</a>
+</div>
+
+<script>
+    const features = {
+        en: [
+            {emoji: "📈", text: "Advanced Chart Analysis: Uses support & resistance, RSI, MACD, Moving Averages for precise trend predictions."},
+            {emoji: "💹", text: "Multi-Indicator Strategy: Combines Bollinger Bands, Fibonacci Levels, Stochastic Oscillator, Volume Analysis, Trendlines for deeper insights."},
+            {emoji: "🤖", text: "AI-Powered Predictions: Analyzes historical data to generate accurate target price ranges and market direction."},
+            {emoji: "⚡", text: "Real-Time Updates: Quickly fetches the latest prices and provides instant analysis based on your chosen timeframe."},
+            {emoji: "🌟", text: "User-Friendly Interface: Simple, clean, and responsive design."},
+            {emoji: "🔒", text: "Secure & Reliable: No personal data required. Analysis is done safely."},
+            {emoji: "🚀", text: "Accessible Everywhere: Works on mobile, tablet, and desktop."}
+        ],
+        ar: [
+            {emoji: "📈", text: "تحليل رسوم بيانية متقدم: يستخدم الدعم والمقاومة، RSI، MACD، والمتوسطات المتحركة لتوقعات دقيقة للاتجاه."},
+            {emoji: "💹", text: "استراتيجية متعددة المؤشرات: يجمع بين Bollinger Bands، مستويات Fibonacci، Stochastic Oscillator، تحليل الحجم وخطوط الاتجاه للحصول على رؤية أعمق."},
+            {emoji: "🤖", text: "توقعات مدعومة بالذكاء الاصطناعي: يحلل البيانات التاريخية لتقديم نطاقات سعرية دقيقة واتجاه السوق."},
+            {emoji: "⚡", text: "تحديثات في الوقت الفعلي: يجلب أحدث الأسعار ويوفر التحليل الفوري بناءً على الإطار الزمني المختار."},
+            {emoji: "🌟", text: "واجهة سهلة الاستخدام: تصميم بسيط ونظيف ومتجاوب."},
+            {emoji: "🔒", text: "آمن وموثوق: لا حاجة للبيانات الشخصية، يتم التحليل بأمان."},
+            {emoji: "🚀", text: "متاح في كل مكان: يعمل على الهاتف والجهاز اللوحي وسطح المكتب."}
+        ]
+    };
+
+    function chooseLanguage(lang) {
+        document.querySelector('.language-select').style.display = 'none';
+        const featuresList = document.getElementById('features-list');
+        featuresList.style.display = 'block';
+        featuresList.innerHTML = '';
+        features[lang].forEach(f => {
+            const li = document.createElement('li');
+            li.innerHTML = `<span class="emoji">${f.emoji}</span><div class="feature-text">${f.text}</div>`;
+            featuresList.appendChild(li);
+        });
+        // show start button
+        document.getElementById('start-btn').style.display = 'inline-block';
+
+        // fade-in effect
+        const items = document.querySelectorAll('li');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting){
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.2 });
+        items.forEach(item => observer.observe(item));
+    }
+</script>
+
+</body>
+</html>
