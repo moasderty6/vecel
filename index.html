@@ -4,118 +4,117 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Crypto Analysis Bot</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;700&display=swap" rel="stylesheet">
 <style>
     body {
-        font-family: 'Montserrat', sans-serif;
-        margin: 0;
-        padding: 0;
+        margin:0;
+        padding:0;
+        font-family: 'Poppins', sans-serif;
+        background: #0d1117;
         color: #fff;
-        font-size: 14px;
         overflow-x: hidden;
     }
 
-    /* Animated blurry chart background */
+    /* Animated blurred chart background */
     body::before {
         content: '';
         position: fixed;
-        top:0; left:0; width:200%; height:200%;
+        top:0; left:0;
+        width:200%; height:200%;
         background: url('https://i.postimg.cc/Z5k7q9Ww/crypto-chart-bg.jpg') repeat;
         background-size: cover;
-        filter: blur(6px) brightness(0.5);
-        z-index: -1;
-        animation: moveBg 120s linear infinite;
+        filter: blur(8px) brightness(0.4);
+        z-index:-1;
+        animation: moveBg 180s linear infinite;
     }
 
     @keyframes moveBg {
         0% { transform: translate(0,0); }
-        50% { transform: translate(-10%, -5%); }
+        50% { transform: translate(-15%, -10%); }
         100% { transform: translate(0,0); }
     }
 
     .container {
-        max-width: 800px;
+        max-width: 900px;
         margin: 50px auto;
-        padding: 30px;
-        background-color: rgba(0,0,0,0.55);
-        border-radius: 20px;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.6);
+        padding: 40px;
+        background-color: rgba(0,0,0,0.6);
+        border-radius: 25px;
+        box-shadow: 0 8px 25px rgba(0,0,0,0.7);
         text-align: center;
     }
 
     .bot-image {
-        width: 150px;
-        height: 150px;
+        width: 160px;
+        height: 160px;
         border-radius: 30px;
         object-fit: cover;
-        margin-bottom: 15px;
+        margin-bottom: 20px;
         border: 3px solid #ffd700;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        box-shadow: 0 5px 20px rgba(0,0,0,0.6);
     }
 
     .bot-title {
-        font-size: 2rem;
+        font-size: 2.2rem;
         color: #ffd700;
         font-weight: 700;
-        text-shadow: 2px 2px 8px #000;
+        text-shadow: 2px 2px 10px #000;
     }
 
     .bot-title-ar {
-        font-size: 2rem;
+        font-size: 2.2rem;
         color: #ffd700;
         font-weight: 700;
-        margin-bottom: 25px;
-        text-shadow: 2px 2px 8px #000;
+        margin-bottom: 30px;
+        text-shadow: 2px 2px 10px #000;
     }
 
+    /* Language selection cards */
     .language-select {
-        margin-bottom: 25px;
         display: flex;
         justify-content: center;
-        gap: 15px;
+        gap: 25px;
+        margin-bottom: 30px;
     }
 
-    .lang-btn {
-        padding: 12px 20px;
-        font-size: 1rem;
-        font-weight: 600;
-        border: none;
-        border-radius: 50px;
+    .lang-card {
+        padding: 18px 28px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 20px;
         cursor: pointer;
+        font-size: 1.2rem;
+        font-weight: 600;
         display: flex;
         align-items: center;
-        gap: 8px;
-        background: rgba(255,255,255,0.15);
-        color: #fff;
+        gap: 12px;
         transition: all 0.3s ease;
-        box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+        box-shadow: 0 6px 18px rgba(0,0,0,0.5);
     }
 
-    .lang-btn:hover {
-        background: rgba(255,255,255,0.3);
-        transform: scale(1.05);
+    .lang-card:hover {
+        transform: translateY(-5px) scale(1.05);
+        background: rgba(255,255,255,0.25);
     }
 
     ul {
         list-style: none;
         padding: 0;
         display: none;
-        margin-bottom: 20px;
+        margin-bottom: 25px;
     }
 
     li {
-        background-color: rgba(255, 255, 255, 0.08);
-        margin: 10px 0;
-        padding: 15px 20px;
-        border-radius: 15px;
+        background: rgba(255,255,255,0.08);
+        margin: 12px 0;
+        padding: 18px 22px;
+        border-radius: 20px;
         font-size: 1rem;
-        line-height: 1.5;
         display: flex;
         align-items: flex-start;
         opacity: 0;
-        transform: translateY(20px);
-        transition: all 0.6s ease-out;
-        color: #f0f0f0;
+        transform: translateY(30px);
+        transition: all 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+        color: #e0e0e0;
     }
 
     li.visible {
@@ -124,43 +123,42 @@
     }
 
     .emoji {
-        font-size: 1.8rem;
-        margin-right: 12px;
+        font-size: 2rem;
+        margin-right: 14px;
     }
 
     .feature-text {
-        flex: 1;
-        text-align: left;
-        color: #e0e0e0;
+        flex:1;
+        text-align:left;
         font-weight: 500;
     }
 
     .highlight {
-        color: #ffd700;
-        font-weight: 700;
+        color:#ffd700;
+        font-weight:700;
     }
 
     .cta-button {
-        display: none;
-        margin-top: 20px;
-        padding: 18px 50px;
-        font-size: 1.6rem;
-        font-weight: 700;
-        color: #fff;
-        background: rgba(255, 255, 255, 0.1);
-        border-radius: 25px;
-        backdrop-filter: blur(10px);
-        border: 2px solid rgba(255,255,255,0.3);
-        cursor: pointer;
-        text-decoration: none;
+        display:none;
+        margin-top: 25px;
+        padding: 18px 55px;
+        font-size:1.6rem;
+        font-weight:700;
+        color:#fff;
+        background: rgba(255,255,255,0.1);
+        border-radius: 30px;
+        backdrop-filter: blur(12px);
+        border: 2px solid rgba(255,255,255,0.35);
+        cursor:pointer;
+        text-decoration:none;
         transition: all 0.3s ease;
-        box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.5);
     }
 
     .cta-button:hover {
-        background: rgba(255, 255, 255, 0.2);
+        background: rgba(255,255,255,0.2);
         transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 12px 25px rgba(0,0,0,0.6);
+        box-shadow: 0 12px 30px rgba(0,0,0,0.6);
     }
 </style>
 </head>
@@ -172,62 +170,61 @@
     <div class="bot-title-ar">بوت تحليل العملات</div>
 
     <div class="language-select">
-        <button class="lang-btn" onclick="chooseLanguage('en')">🇬🇧 English</button>
-        <button class="lang-btn" onclick="chooseLanguage('ar')">🇸🇦 العربية</button>
+        <div class="lang-card" onclick="chooseLanguage('en')">🇬🇧 English</div>
+        <div class="lang-card" onclick="chooseLanguage('ar')">🇸🇦 العربية</div>
     </div>
 
     <ul id="features-list"></ul>
-
     <a class="cta-button" id="start-btn" href="https://t.me/AiCryptoGPTbot?start" target="_blank">Start Now 🚀</a>
 </div>
 
 <script>
 const features = {
-    en: [
-        {emoji: "📈", text: "Chart Analysis: Support & Resistance, RSI, MACD, Moving Averages."},
-        {emoji: "💹", text: "Multi-Indicator Strategy: Bollinger Bands, Fibonacci, Stochastic, Volume Analysis, Trendlines."},
-        {emoji: "🤖", text: "AI Predictions: Historical data for accurate target prices."},
-        {emoji: "⚡", text: "Real-Time Updates: Latest prices & analysis per timeframe."},
-        {emoji: "🌟", text: "User-Friendly Interface: Clean & responsive design."},
-        {emoji: "🔒", text: "Secure: No personal data required."},
-        {emoji: "🚀", text: "Accessible Everywhere: Mobile, tablet, desktop."}
+    en:[
+        {emoji:"📈", text:"Chart Analysis: Support & Resistance, RSI, MACD, Moving Averages."},
+        {emoji:"💹", text:"Multi-Indicator Strategy: Bollinger Bands, Fibonacci, Stochastic, Volume, Trendlines."},
+        {emoji:"🤖", text:"AI Predictions: Historical data for accurate target prices."},
+        {emoji:"⚡", text:"Real-Time Updates: Latest prices & analysis per timeframe."},
+        {emoji:"🌟", text:"User-Friendly Interface: Clean & responsive design."},
+        {emoji:"🔒", text:"Secure: No personal data required."},
+        {emoji:"🚀", text:"Accessible Everywhere: Mobile, tablet, desktop."}
     ],
-    ar: [
-        {emoji: "📈", text: "تحليل الرسوم البيانية: الدعم والمقاومة، RSI، MACD، المتوسطات المتحركة."},
-        {emoji: "💹", text: "استراتيجية متعددة المؤشرات: Bollinger Bands، Fibonacci، Stochastic، تحليل الحجم، خطوط الاتجاه."},
-        {emoji: "🤖", text: "توقعات الذكاء الاصطناعي: بيانات تاريخية للحصول على أسعار دقيقة."},
-        {emoji: "⚡", text: "تحديثات فورية: أحدث الأسعار والتحليل حسب الإطار الزمني."},
-        {emoji: "🌟", text: "واجهة سهلة الاستخدام: تصميم نظيف ومتجاوب."},
-        {emoji: "🔒", text: "آمن: لا حاجة للبيانات الشخصية."},
-        {emoji: "🚀", text: "متاح في كل مكان: الهاتف، الجهاز اللوحي، سطح المكتب."}
+    ar:[
+        {emoji:"📈", text:"تحليل الرسوم البيانية: الدعم والمقاومة، RSI، MACD، المتوسطات المتحركة."},
+        {emoji:"💹", text:"استراتيجية متعددة المؤشرات: Bollinger Bands، Fibonacci، Stochastic، تحليل الحجم، خطوط الاتجاه."},
+        {emoji:"🤖", text:"توقعات الذكاء الاصطناعي: بيانات تاريخية للحصول على أسعار دقيقة."},
+        {emoji:"⚡", text:"تحديثات فورية: أحدث الأسعار والتحليل حسب الإطار الزمني."},
+        {emoji:"🌟", text:"واجهة سهلة الاستخدام: تصميم نظيف ومتجاوب."},
+        {emoji:"🔒", text:"آمن: لا حاجة للبيانات الشخصية."},
+        {emoji:"🚀", text:"متاح في كل مكان: الهاتف، الجهاز اللوحي، سطح المكتب."}
     ]
 };
 
-function chooseLanguage(lang) {
-    // اختفاء اختيار اللغة
+function chooseLanguage(lang){
+    // اختفاء كروت اللغة
     const langDiv = document.querySelector('.language-select');
     langDiv.style.transition = "opacity 0.5s";
-    langDiv.style.opacity = 0;
-    setTimeout(() => { langDiv.style.display = 'none'; }, 500);
+    langDiv.style.opacity=0;
+    setTimeout(()=>{langDiv.style.display='none';},500);
 
-    // إظهار قائمة المميزات تدريجياً
+    // إظهار المميزات تدريجياً
     const featuresList = document.getElementById('features-list');
-    featuresList.style.display = 'block';
-    featuresList.innerHTML = '';
+    featuresList.style.display='block';
+    featuresList.innerHTML='';
 
-    features[lang].forEach((f, i) => {
-        setTimeout(() => {
+    features[lang].forEach((f,i)=>{
+        setTimeout(()=>{
             const li = document.createElement('li');
-            li.innerHTML = `<span class="emoji">${f.emoji}</span><div class="feature-text">${f.text}</div>`;
+            li.innerHTML=`<span class="emoji">${f.emoji}</span><div class="feature-text">${f.text}</div>`;
             featuresList.appendChild(li);
             li.classList.add('visible');
-        }, i * 700); // كل ميزة تظهر بعد 700ms
+        }, i*600);
     });
 
-    // إظهار زر البداية بعد انتهاء المميزات
-    setTimeout(() => {
-        document.getElementById('start-btn').style.display = 'inline-block';
-    }, features[lang].length * 700 + 200);
+    // زر البداية بعد انتهاء المميزات
+    setTimeout(()=>{
+        document.getElementById('start-btn').style.display='inline-block';
+    }, features[lang].length*600 + 400);
 }
 </script>
 
