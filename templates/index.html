@@ -12,8 +12,9 @@ body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin:0; pa
 .lang-buttons { display:flex; justify-content:center; gap:15px; margin-bottom:20px; flex-wrap:wrap; }
 .lang-buttons button { padding:10px 25px; border-radius:20px; border:none; cursor:pointer; background: rgba(255,255,255,0.2); color:#fff; font-weight:bold; transition:0.3s; }
 .lang-buttons button.selected { background: rgba(255,255,255,0.5); color:#000; }
-.input-group { display:flex; justify-content:center; gap:10px; margin-bottom:15px; flex-wrap:wrap; display:none; }
-.input-group input[type=text] { padding:10px 15px; border-radius:12px; border:none; font-size:1rem; width:200px; }
+.input-group { display:none; flex-direction:column; align-items:center; gap:15px; margin-bottom:15px; }
+.input-group input[type=text] { padding:10px 15px; border-radius:12px; border:none; font-size:1rem; width:250px; }
+.time-buttons { display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
 .btn-time { padding:10px 15px; border-radius:12px; border:none; cursor:pointer; background: rgba(255,255,255,0.2); color:#fff; font-weight:bold; transition:0.3s; }
 .btn-time.selected { background: rgba(255,255,255,0.5); color:#000; }
 .start-analyze { display:inline-block; padding:12px 30px; font-size:1rem; font-weight:bold; color:#fff; background: rgba(255,255,255,0.1); border-radius:20px; border:2px solid rgba(255,255,255,0.3); backdrop-filter:blur(10px); cursor:pointer; transition:0.3s; margin-bottom:15px; display:none; }
@@ -24,28 +25,24 @@ body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin:0; pa
 <body>
 
 <div class="container">
-    <!-- صورة البوت واسم البوت -->
     <img class="bot-image" src="https://i.postimg.cc/NMY0c6Nf/IMG-4506.jpg" alt="Bot Image">
     <div class="bot-title">Crypto bot | بوت تحليل العملات</div>
 
-    <!-- اختيار اللغة -->
     <div class="lang-buttons">
         <button data-lang="ar">🇸🇦 العربية</button>
         <button data-lang="en">🇺🇸 English</button>
     </div>
 
-    <!-- اختيار العملة والإطار الزمني -->
     <div class="input-group" id="currencyGroup">
         <input type="text" id="symbol" placeholder="رمز العملة مثل BTC">
-        <button class="btn-time" data-time="1D">1D</button>
-        <button class="btn-time" data-time="1W">1W</button>
-        <button class="btn-time" data-time="1M">1M</button>
+        <div class="time-buttons">
+            <button class="btn-time" data-time="1D">1D</button>
+            <button class="btn-time" data-time="1W">1W</button>
+            <button class="btn-time" data-time="1M">1M</button>
+        </div>
     </div>
 
-    <!-- زر تحليل العملة -->
     <button class="start-analyze" id="analyzeBtn">تحليل العملة</button>
-
-    <!-- مكان عرض النتائج -->
     <div id="result"></div>
 </div>
 
@@ -57,7 +54,6 @@ tg.expand();
 let selectedLang = null;
 let selectedTime = "1W";
 
-// اختيار اللغة
 const langButtons = document.querySelectorAll(".lang-buttons button");
 langButtons.forEach(btn=>{
     btn.addEventListener("click",()=>{
@@ -65,14 +61,16 @@ langButtons.forEach(btn=>{
         btn.classList.add("selected");
         selectedLang = btn.getAttribute("data-lang");
 
-        // إظهار العملة والإطار الزمني وزر التحليل بعد اختيار اللغة
+        // تعديل placeholder حسب اللغة
+        document.getElementById("symbol").placeholder = selectedLang==="ar"?"رمز العملة مثل BTC":"Enter coin symbol e.g. BTC";
+
         document.getElementById("currencyGroup").style.display = "flex";
         document.getElementById("analyzeBtn").style.display = "inline-block";
         document.getElementById("result").style.display = "block";
     });
 });
 
-// اختيار الإطار الزمني
+// أزرار الإطار الزمني
 const timeButtons = document.querySelectorAll(".btn-time");
 timeButtons.forEach(btn=>{
     btn.addEventListener("click",()=>{
@@ -85,10 +83,10 @@ timeButtons.forEach(btn=>{
 // زر التحليل
 document.getElementById("analyzeBtn").addEventListener("click", async ()=>{
     const symbol = document.getElementById("symbol").value.trim();
-    if(!symbol){ alert("الرجاء إدخال رمز العملة"); return; }
+    if(!symbol){ alert(selectedLang==="ar"?"الرجاء إدخال رمز العملة":"Please enter coin symbol"); return; }
     const userId = tg.initDataUnsafe.user.id;
 
-    document.getElementById("result").innerHTML = "⏳ جاري التحليل...";
+    document.getElementById("result").innerHTML = selectedLang==="ar"?"⏳ جاري التحليل...":"⏳ Analyzing...";
 
     try {
         const res = await fetch("/analyze",{
@@ -98,12 +96,15 @@ document.getElementById("analyzeBtn").addEventListener("click", async ()=>{
         });
         const data = await res.json();
         if(data.status === "ok"){
-            document.getElementById("result").innerHTML = `<b>السعر الحالي:</b> $${data.price.toFixed(6)}<br><pre>${data.analysis}</pre>`;
+            document.getElementById("result").innerHTML = 
+                (selectedLang==="ar"?"<b>السعر الحالي:</b> $":"<b>Current Price:</b> $") 
+                + data.price.toFixed(6) 
+                + "<br><pre>" + data.analysis + "</pre>";
         } else {
             document.getElementById("result").innerHTML = data.msg;
         }
     } catch(e){
-        document.getElementById("result").innerHTML = "❌ حدث خطأ أثناء التحليل";
+        document.getElementById("result").innerHTML = selectedLang==="ar"?"❌ حدث خطأ أثناء التحليل":"❌ Analysis failed";
         console.error(e);
     }
 });
