@@ -123,7 +123,6 @@
     .symbol.btc { color: #f7931a; top: 20%; left: 15%; animation-delay: 0s; }
     .symbol.eth { color: #627eea; top: 70%; left: 80%; animation-delay: -7s; }
 
-    /* === CENTERING FIX: Added a wrapper for content === */
     .content-wrapper {
         width: 100%;
         min-height: 100vh;
@@ -136,7 +135,7 @@
     
     .container {
         max-width: 900px;
-        width: 100%; /* Take full width of wrapper */
+        width: 100%;
         padding: 40px;
         background-color: rgba(3, 4, 15, 0.7);
         border-radius: 25px;
@@ -148,7 +147,6 @@
         position: relative;
         z-index: 10;
         opacity: 0;
-        /* === DELAY FIX: Added a 1s animation-delay === */
         animation: fade-in 2s ease-out 1s forwards;
     }
     @keyframes fade-in { 
@@ -259,6 +257,7 @@
 <script>
 const features = {
     en:[
+        {emoji:"💎", text:"<span class='highlight'>$3 Lifetime Subscription:</span> Unlock winning trade analyses for life."},
         {emoji:"📈", text:"<span class='highlight'>Chart Analysis:</span> Support & Resistance, RSI, MACD, Moving Averages."},
         {emoji:"💹", text:"<span class='highlight'>Multi-Indicator Strategy:</span> Bollinger Bands, Fibonacci, Stochastic, Volume, Trendlines."},
         {emoji:"🤖", text:"<span class='highlight'>AI Predictions:</span> Historical data for accurate target prices."},
@@ -268,6 +267,7 @@ const features = {
         {emoji:"🚀", text:"<span class='highlight'>Accessible Everywhere:</span> Mobile, tablet, desktop."}
     ],
     ar:[
+        {emoji:"💎", text:"<span class='highlight'>اشتراك 3$ مدى الحياة:</span> احصل على تحليلات لصفقات رابحة مدى الحياة."},
         {emoji:"📈", text:"<span class='highlight'>تحليل الرسوم البيانية:</span> الدعم والمقاومة، RSI، MACD، المتوسطات المتحركة."},
         {emoji:"💹", text:"<span class='highlight'>استراتيجية المؤشرات:</span> Bollinger Bands، Fibonacci، Stochastic، تحليل الحجم، خطوط الاتجاه."},
         {emoji:"🤖", text:"<span class='highlight'>توقعات الذكاء الاصطناعي:</span> بيانات تاريخية للحصول على أسعار مستهدفة دقيقة."},
